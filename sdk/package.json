@@ -1,0 +1,39 @@
+{
+  "name": "@verime/sdk",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./types": "./src/types.ts",
+    "./storage": "./src/storage.ts",
+    "./contract-api": "./src/contract-api.ts",
+    "./contract-on-chain": "./src/contract-on-chain.ts",
+    "./contract-verify": "./src/contract-verify.ts",
+    "./providers": "./src/providers.ts",
+    "./secret": "./src/secret.ts",
+    "./predicate": "./src/predicate.ts",
+    "./commitment": "./src/commitment.ts"
+  },
+  "scripts": {
+    "build": "tsc --noEmit",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@midnight-ntwrk/compact-runtime": "^0.16.0",
+    "@midnight-ntwrk/ledger-v8": "^8.0.3",
+    "@midnight-ntwrk/midnight-js-protocol": "^4.0.4",
+    "@midnight-ntwrk/dapp-connector-api": "^4.0.1",
+    "@midnight-ntwrk/midnight-js-contracts": "^4.0.4",
+    "@midnight-ntwrk/midnight-js-fetch-zk-config-provider": "^4.0.4",
+    "@midnight-ntwrk/midnight-js-indexer-public-data-provider": "^4.0.4",
+    "@midnight-ntwrk/midnight-js-level-private-state-provider": "^4.0.4",
+    "@midnight-ntwrk/midnight-js-network-id": "^4.0.4",
+    "@midnight-ntwrk/midnight-js-types": "^4.0.4",
+    "@midnight-ntwrk/midnight-js-utils": "^4.0.4"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.0"
+  }
+}
