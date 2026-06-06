@@ -1,0 +1,105 @@
+pragma language_version 0.23;
+
+import CompactStandardLibrary;
+
+// ─── Public ledger ──────────────────────────────────────────────────────────
+//
+// proofs  — Set of commitments: persistentHash(derived_secret)
+//           Each entry represents one (user, predicate) pair.
+//           The same user issuing "over 18" and "over 35" produces
+//           different commitments — unlinkable without the master secret.
+//
+// revoked — Set of IDENTITY commitments: persistentHash(master_secret_hash)
+//           When a user revokes, ALL their credentials across ALL predicates
+//           are simultaneously invalidated by a single revocation marker.
+//           The revocation key is derived in the SDK from the master secret
+//           and passed as the witness — same privacy guarantees.
+//
+export ledger proofs:  Set<Bytes<32>>;
+export ledger revoked: Set<Bytes<32>>;
+
+// ─── Witnesses ──────────────────────────────────────────────────────────────
+//
+// derived_secret — The per-predicate scalar. Computed in the JS SDK as:
+//                  HMAC-SHA256(master_secret, `${min_age}:${max_age}`) → Field
+//                  The raw master secret never enters any circuit.
+//
+// birth_year     — The user's four-digit birth year (e.g. 1990).
+//                  Extracted locally from the scanned ID via MRZ parsing.
+//                  Never disclosed on-chain.
+//
+// revoke_key     — Derived from master_secret in the SDK for revocation.
+//                  persistentHash(revoke_key) is the revocation marker.
+//
+witness derived_secret(): Field;
+witness birth_year():      Uint<16>;
+witness revoke_key():      Field;
+
+// ─── issue_proof ─────────────────────────────────────────────────────────────
+//
+// Proves that the user's age satisfies the predicate [min_age, max_age]:
+//   age = current_year - birth_year()
+//   assert age >= min_age
+//   assert max_age == 0 || age <= max_age    (0 = no upper bound)
+//
+// On success, inserts persistentHash(derived_secret()) into proofs.
+// Idempotent: calling twice with the same derived_secret is a no-op
+// (Set.insert does not duplicate).
+//
+// Parameters (public — appear in the on-chain transaction):
+//   min_age      : Uint<8>  — lower bound (e.g. 18, 21, 35)
+//   max_age      : Uint<8>  — upper bound, 0 = unbounded (e.g. 0, 65, 25)
+//   current_year : Uint<16> — the year at proof generation time (e.g. 2026)
+//
+export circuit issue_proof(
+  min_age:      Uint<8>,
+  max_age:      Uint<8>,
+  current_year: Uint<16>
+): [] {
+  const byear: Uint<16> = birth_year();
+
+  assert(current_year >= byear, "Birth year is in the future");
+
+  const age: Uint<16> = current_year - byear;
+
+  assert(age >= (min_age as Uint<16>), "Does not meet minimum age requirement");
+  assert(
+    max_age == 0 || age <= (max_age as Uint<16>),
+    "Exceeds maximum age requirement"
+  );
+
+  const commitment: Bytes<32> = persistentHash<Field>(derived_secret());
+  proofs.insert(disclose(commitment));
+}
+
+// ─── verify_proof ────────────────────────────────────────────────────────────
+//
+// Read-only check: is the commitment present in proofs and not revoked?
+// Called by any verifier (a venue, a platform, another dApp).
+// The verifier supplies the commitment they received from the credential holder.
+//
+// This circuit does NOT require the birth_year or derived_secret witnesses —
+// it operates purely on public ledger state.
+// The user presents their commitment (hash) out-of-band (e.g. QR code).
+//
+export circuit verify_proof(
+  commitment: Bytes<32>,
+  revoke_marker: Bytes<32>
+): Boolean {
+  return proofs.member(disclose(commitment))
+      && !revoked.member(disclose(revoke_marker));
+}
+
+// ─── revoke ──────────────────────────────────────────────────────────────────
+//
+// User self-revokes ALL their credentials simultaneously.
+// Inserts persistentHash(revoke_key()) into the revoked Set.
+// verify_proof will return false for any commitment paired with this revoke_marker.
+//
+// The revoke_key is derived from the master secret in the SDK — it is stable
+// across all predicates for the same user. One call invalidates everything.
+//
+export circuit revoke(): [] {
+  const marker: Bytes<32> = persistentHash<Field>(revoke_key());
+  revoked.insert(disclose(marker));
+}

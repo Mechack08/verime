@@ -1,0 +1,10 @@
+{
+  "name": "@verime/contract",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "build": "make build",
+    "build:skip-zk": "make build-skip-zk",
+    "clean": "make clean"
+  }
+}
