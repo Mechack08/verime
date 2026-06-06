@@ -28,7 +28,7 @@ Everything runs **client-side**. There is no backend that could ever see your da
 - [How it works](#how-it-works)
 - [Prerequisites](#prerequisites)
 - [Quick start (clone &amp; run)](#quick-start-clone--run)
-- [Modes of operation](#modes-of-operation)
+- [Generating a proof](#generating-a-proof)
 - [Verifying a credential on-chain](#verifying-a-credential-on-chain)
 - [How the zero-knowledge privacy works](#how-the-zero-knowledge-privacy-works)
 - [Project structure](#project-structure)
@@ -51,7 +51,7 @@ Everything runs **client-side**. There is no backend that could ever see your da
    device and never enters a circuit.
 3. **Generate the proof.** A Compact zero-knowledge circuit checks
    `age = currentYear − birthYear` against the predicate and outputs a 32-byte commitment.
-   In **local mode** the commitment is stored in `localStorage`; in **on-chain mode** it is
+   A **connected wallet is required**: the proof is submitted on-chain and the commitment is
    inserted into the contract’s public `proofs` set on the Midnight ledger.
 4. **Share &amp; verify.** Hand a verifier the commitment (e.g. as a QR code). They confirm it
    is recorded and not revoked — without learning anything about you.
@@ -85,7 +85,7 @@ These steps are designed to work with **zero errors** on a fresh machine.
 
 ```bash
 # 1. Clone
-git clone <repo-url>
+git clone https://github.com/Mechack08/verime.git
 cd verime
 
 # 2. Install all workspace dependencies (a postinstall step patches a few deps automatically)
@@ -98,8 +98,9 @@ pnpm start
 Open **<http://localhost:5173>** (Vite will pick the next free port — e.g. `5174` — if
 `5173` is taken; watch the terminal output for the exact URL).
 
-That’s it. The app runs **fully locally** — no wallet, no Docker, no network required. You
-can scan an ID, pick a predicate, and generate a local (off-chain) proof immediately.
+The UI runs immediately — you can scan an ID and choose a predicate right away. **Generating
+a proof requires a connected Midnight wallet** (and the proof server), since the credential is
+recorded on-chain. See [Generating a proof](#generating-a-proof) below for the one-time setup.
 
 > **No camera?** You still see the full flow; the scan step simply needs camera permission.
 > Grant it via the lock icon in the address bar. `localhost` is treated as a secure origin,
@@ -107,20 +108,10 @@ can scan an ID, pick a predicate, and generate a local (off-chain) proof immedia
 
 ---
 
-## Modes of operation
+## Generating a proof
 
-### Local mode — default, no wallet, no Docker
-
-Works immediately after `pnpm install &amp;&amp; pnpm start`.
-
-- Scan your ID via webcam
-- Pick a predicate
-- Generate a commitment stored in `localStorage`
-- Copy it or share it as a QR code
-
-### On-chain mode — records the commitment on the Midnight ledger
-
-This additionally requires a **Midnight wallet** and the **proof server** (Docker).
+Proof generation always records the credential **on-chain**, so it requires a **Midnight
+wallet** and the **proof server** (Docker). The app does not generate off-chain/local proofs.
 
 **1. Install a Midnight wallet browser extension** and switch it to the **pre-production**
 network (`preprod`). Any wallet that injects into `window.midnight` works (e.g. Lace for
