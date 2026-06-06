@@ -1,0 +1,8 @@
+{
+  "version": 3,
+  "file": "index.js",
+  "sourceRoot": "",
+  "sources": ["verime.compact", "compiler/standard-library.compact"],
+  "names": [],
+  "mappings": ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;EAAA;;;;;;;;;;;;;;;;;;;MAqDA,AAAA,WAmBC;;;;;cAlBC,SAAqB;cACrB,SAAqB;cACrB,cAAsB;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;yCAFtB,SAAqB,+BACrB,SAAqB,+BACrB,cAAsB;;;;;;;;;6CAFtB,SAAqB;6CACrB,SAAqB;6CACrB,cAAsB;;;OAgBvB;MAYD,AAAA,YAMC;;;;;cALC,YAAqB;cACrB,eAAwB;;;;;;;;;;;;;;;;;;;;;;;;;yCADxB,YAAqB,+BACrB,eAAwB;;;;;;;;;8CADxB,YAAqB;8CACrB,eAAwB;;;OAIzB;MAWD,AAAA,MAGC;;;;;;;;;;;;;;;;;;;;;;OAAA;;;;;;;;;;;;GACA;EAzGD;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;IAiBA;;;;;;;;;;yEAAsC;IACtC;;;;;;;;;;yEAAsC;;;;;;;GAuFrC;ECzGD,AAAA,kBAAA;oEAAA;;;EDiCA,AAAA,iBAAgC;;0DAAhC,cAAgC;;;;;;;;;;;;;;GAAA;EAChC,AAAA,aAAoC;;0DAApC,UAAoC;;;;;;;;;;;;;;GAAA;EACpC,AAAA,aAAiC;;0DAAjC,UAAiC;;;;;;;;;;;;;;GAAA;EAkBjC,AAAA,cAmBC,4BAlBC,SAAqB,EACrB,SAAqB,EACrB,cAAsB;;UAEhB,OAA8B;4BAE7B,cAAY,IAAI,OAAK;;UAEtB,KAAoC,4BAApB,cAAY,IAAG,OAAK;;mBAApB,cAAY,GAAG,OAAK;4BAEnC,KAAG,IAAK,SAAO;;0CAEpB,SAAO,SAAS,KAAG,IAAK,SAAO;;UAI3B,YAA+D;;IACrE;;;;;;;;;;2HAAuB,YAAU;;;;;wEAA3B;;GACP;EAYD,AAAA,eAMC,4BALC,YAAqB,EACrB,eAAwB;mCAEjB;;;;;;;;;;;0JAAuB,YAAU;;;;wGAA3B;;oCACL;;;;;;;;;;;2JAAwB,eAAa;;;;yGAA9B;GAChB;EAWD,AAAA,SAGC;UAFO,QAAuD;;IAC7D;;;;;;;;;;2HAAwB,QAAM;;;;;wEAAvB;;GACR;;;;;;;;;;;;;;;;;;;;IAvFD;;;;;uCAAA;;;;;;;;;;;;;;;;4GAAsC;;;;;;uCAAtC;;;;;;;;;;;;4GAAsC;;;;;;;;;;;;;;uCAAtC;;;;;;;;;;;;;;;4GAAsC;;;;;;;;;KAAA;IACtC;;;;;uCAAA;;;;;;;;;;;;;;;;4GAAsC;;;;;;uCAAtC;;;;;;;;;;;;4GAAsC;;;;;;;;;;;;;;uCAAtC;;;;;;;;;;;;;;;4GAAsC;;;;;;;;;KAAA;;;;;;;;;;;;;;"
+}
