@@ -1,0 +1,57 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Build outputs
+dist/
+build/
+.vite/
+
+# Generated Compact compiler output (committed — remove line if you prefer gitignore)
+# generated/
+
+# TypeScript
+*.tsbuildinfo
+# Stale tsc emit in source trees (must not shadow .ts for Vite)
+sdk/src/**/*.js
+frontend/src/**/*.js
+!frontend/src/shims/**/*.js
+
+# Vite
+vite.config.ts.timestamp-*
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Editor
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Docker
+.docker/
+
+# Coverage
+coverage/
+.nyc_output/
+
+# ZK keys (large binary files — generated locally)
+generated/keys/
+generated/zkir/

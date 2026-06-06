@@ -1,0 +1,30 @@
+{
+  "name": "verime",
+  "private": true,
+  "packageManager": "pnpm@9.15.0",
+  "engines": {
+    "node": ">=20",
+    "pnpm": ">=9"
+  },
+  "scripts": {
+    "postinstall": "node scripts/patch-deps.mjs",
+    "start": "pnpm --filter frontend dev",
+    "start:full": "pnpm proof-server:start && pnpm --filter frontend dev",
+    "dev": "pnpm --filter frontend dev",
+    "build": "pnpm --filter sdk build && pnpm --filter frontend build",
+    "preview": "pnpm --filter frontend preview",
+    "test": "pnpm --filter tests test",
+    "test:watch": "pnpm --filter tests test:watch",
+    "typecheck": "pnpm --filter @verime/sdk typecheck && pnpm --filter frontend typecheck && pnpm --filter tests typecheck",
+    "proof-server:start": "docker run -d --rm -p 6300:6300 --name verime-proof-server midnightntwrk/proof-server",
+    "proof-server:stop": "docker stop verime-proof-server 2>/dev/null || true",
+    "proof-server:logs": "docker logs -f verime-proof-server",
+    "contract:build": "cd contract && make build",
+    "contract:build:fast": "cd contract && make build-skip-zk",
+    "contract:clean": "cd contract && make clean",
+    "clean": "rm -rf frontend/dist sdk/dist"
+  },
+  "devDependencies": {
+    "playwright": "1.49.0"
+  }
+}
