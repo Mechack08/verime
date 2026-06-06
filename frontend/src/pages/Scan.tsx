@@ -22,7 +22,7 @@ export default function Scan() {
 
   const { state: scanState, scan, reset: resetScan } = useIdScanner();
   const { phase, error: proofError, result, generate, reset: resetProof } = useProofGenerator();
-  const { wallet } = useWalletContext();
+  const { wallet, status: walletStatus, connect } = useWalletContext();
 
   const [activeStep, setActiveStep] = useState<Step>(1);
   const [docType, setDocType] = useState<DocType>("passport");
@@ -87,8 +87,8 @@ export default function Scan() {
   };
 
   const handleGenerate = async () => {
-    if (!selectedPredicate || birthYearRef.current === 0) return;
-    await generate(birthYearRef.current, selectedPredicate, wallet ?? undefined);
+    if (!selectedPredicate || birthYearRef.current === 0 || !wallet) return;
+    await generate(birthYearRef.current, selectedPredicate, wallet);
   };
 
   const handleDone = () => {
@@ -326,10 +326,19 @@ export default function Scan() {
             )}
 
             {!wallet && phase === "idle" && (
-              <p className="text-xs text-[var(--color-text-muted)]">
-                Generating locally stores a commitment in this browser. Connect a wallet to also
-                record it on the Midnight TestNet.
-              </p>
+              <div className="rounded-[var(--radius)] border border-[var(--color-border)] bg-[var(--color-surface-raised)] px-3 py-3 space-y-3">
+                <p className="text-xs text-[var(--color-text-muted)]">
+                  A connected wallet is required to generate a proof — the credential is
+                  recorded on the Midnight ledger.
+                </p>
+                <Button
+                  variant="primary"
+                  loading={walletStatus === "connecting"}
+                  onClick={() => connect()}
+                >
+                  {walletStatus === "error" ? "Retry Connect" : "Connect Wallet"}
+                </Button>
+              </div>
             )}
 
             {wallet && phase === "idle" && (
@@ -338,9 +347,9 @@ export default function Scan() {
               </p>
             )}
 
-            {phase === "idle" && (
+            {wallet && phase === "idle" && (
               <Button variant="primary" onClick={handleGenerate}>
-                {wallet ? "Generate & Record On-Chain" : "Generate Local Proof"}
+                Generate &amp; Record On-Chain
               </Button>
             )}
 

@@ -29,7 +29,7 @@ export interface UseProofGeneratorReturn {
   phase: ProofPhase;
   error: string | null;
   result: CredentialRecord | null;
-  generate: (birthYear: number, predicate: Predicate, wallet?: WalletConnectedAPI) => Promise<void>;
+  generate: (birthYear: number, predicate: Predicate, wallet: WalletConnectedAPI) => Promise<void>;
   reset: () => void;
 }
 
@@ -41,8 +41,14 @@ export function useProofGenerator(): UseProofGeneratorReturn {
   const generate = useCallback(async (
     birthYear: number,
     predicate: Predicate,
-    wallet?: WalletConnectedAPI,
+    wallet: WalletConnectedAPI,
   ) => {
+    if (!wallet) {
+      setError("Connect a wallet to generate a proof.");
+      setPhase("error");
+      return;
+    }
+
     setPhase("deriving");
     setError(null);
 
@@ -52,34 +58,19 @@ export function useProofGenerator(): UseProofGeneratorReturn {
       const derivedSecret = await derivedSecretFor(masterSecret, predicate.minAge, predicate.maxAge);
       const revokeKey     = await deriveRevokeKey(masterSecret);
 
-      setPhase("proving");
+      setPhase("recording");
 
       const api = new VeriMeAPI(derivedSecret, revokeKey, birthYear);
-
-      let contractAddress = "";
-      let commitmentHex: string;
-      let revokeMarkerHex: string;
-
-      if (wallet) {
-        setPhase("recording");
-        const out = await api.issueProofOnChain(predicate.minAge, predicate.maxAge, wallet);
-        contractAddress  = out.contractAddress;
-        commitmentHex    = out.commitment;
-        revokeMarkerHex  = out.revokeMarker;
-      } else {
-        const out = await api.issueProofLocal(predicate.minAge, predicate.maxAge);
-        commitmentHex   = out.commitment;
-        revokeMarkerHex = out.revokeMarker;
-      }
+      const out = await api.issueProofOnChain(predicate.minAge, predicate.maxAge, wallet);
 
       const record: CredentialRecord = {
         id:              uuidv4(),
         predicate,
-        commitment:      commitmentHex,
-        revokeMarker:    revokeMarkerHex,
-        contractAddress,
+        commitment:      out.commitment,
+        revokeMarker:    out.revokeMarker,
+        contractAddress: out.contractAddress,
         issuedAt:        Date.now(),
-        isOnChain:       Boolean(wallet),
+        isOnChain:       true,
       };
 
       saveCredential(record);
