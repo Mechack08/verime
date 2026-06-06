@@ -1,0 +1,21 @@
+{
+  "name": "@verime/tests",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "coverage": "vitest run --coverage",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@midnight-ntwrk/compact-runtime": "^0.16.0",
+    "@verime/sdk": "workspace:*"
+  },
+  "devDependencies": {
+    "@vitest/coverage-v8": "^3.1.0",
+    "typescript": "^5.7.0",
+    "vitest": "^3.1.0"
+  }
+}
