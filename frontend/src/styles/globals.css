@@ -1,0 +1,182 @@
+@import "tailwindcss";
+
+@theme {
+  /* ── Midnight brand palette ─────────────────────── */
+  --color-void:            #050509;  /* deepest background            */
+  --color-base:            #0A0A12;  /* page background               */
+  --color-surface:         #101020;  /* card / panel background       */
+  --color-surface-raised:  #16162A;  /* inputs, code blocks           */
+  --color-surface-hover:   #1E1E36;  /* hover state on surfaces       */
+  --color-border:          #262645;  /* borders, dividers             */
+  --color-border-strong:   #34335C;  /* emphasized borders            */
+  --color-border-subtle:   #181830;  /* de-emphasized separators      */
+
+  /* Primary — Midnight violet */
+  --color-violet:          #7C5CFC;  /* primary accent                */
+  --color-violet-dim:      #5E41CC;  /* pressed / darker              */
+  --color-violet-soft:     #A892FF;  /* lighter / hover               */
+  --color-violet-ghost:    rgba(124,92,252,0.10); /* subtle bg tint   */
+  --color-violet-glow:     rgba(124,92,252,0.35); /* focus ring, glow */
+
+  /* Secondary accent — cyan, for "private/secure" highlights */
+  --color-cyan:            #38E0D0;
+  --color-cyan-soft:       #7CF0E4;
+  --color-cyan-ghost:      rgba(56,224,208,0.10);
+
+  /* Text — all tuned for legibility on the near-black background.
+     NB: the primary color is named `--color-ink`, NOT `--color-text`.
+     A token named `text` collides with Tailwind's overloaded `text-*`
+     utility prefix, so `text-[var(--color-text)]` fails to emit a color
+     rule and elements fall back to black. `--color-ink` avoids that. */
+  --color-ink:             #F1EFFC;  /* primary text — slight violet tint */
+  --color-text-muted:      #A9A6C6;  /* secondary / supporting        */
+  --color-text-subtle:     #8B88AE;  /* tertiary labels / metadata    */
+
+  /* Status */
+  --color-ok:              #34D399;
+  --color-ok-soft:         rgba(52,211,153,0.12);
+  --color-fail:            #F87171;
+  --color-fail-soft:       rgba(248,113,113,0.12);
+  --color-warn:            #FBBF24;
+  --color-warn-soft:       rgba(251,191,36,0.12);
+
+  /* Radius scale */
+  --radius-sm:  6px;
+  --radius:     10px;
+  --radius-lg:  14px;
+  --radius-xl:  20px;
+
+  /* Typography */
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", "Fira Code", ui-monospace, monospace;
+}
+
+html, body {
+  background: var(--color-base);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  min-height: 100dvh;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* ── Layered page background: deep base + violet/cyan aurora + fine grid ── */
+.app-bg {
+  position: relative;
+  background-color: var(--color-base);
+  background-image:
+    radial-gradient(60rem 40rem at 75% -10%, rgba(124, 92, 252, 0.16), transparent 60%),
+    radial-gradient(50rem 38rem at 5% 5%, rgba(56, 224, 208, 0.07), transparent 55%);
+  background-attachment: fixed;
+}
+.app-bg::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image:
+    linear-gradient(var(--color-border-subtle) 1px, transparent 1px),
+    linear-gradient(90deg, var(--color-border-subtle) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(circle at 50% 0%, black, transparent 80%);
+  opacity: 0.5;
+}
+.app-bg > * { position: relative; z-index: 1; }
+
+/* Subtle grid texture for standalone sections */
+.grid-texture {
+  background-image:
+    linear-gradient(var(--color-border-subtle) 1px, transparent 1px),
+    linear-gradient(90deg, var(--color-border-subtle) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+/* ── Surfaces ───────────────────────────────────── */
+.vm-card {
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.02), transparent 40%),
+    var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 1px 0 0 rgba(255,255,255,0.03) inset,
+              0 12px 32px -16px rgba(0,0,0,0.8);
+}
+.vm-card-interactive {
+  transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+.vm-card-interactive:hover {
+  border-color: var(--color-border-strong);
+  transform: translateY(-2px);
+  box-shadow: 0 1px 0 0 rgba(255,255,255,0.04) inset,
+              0 20px 44px -18px rgba(0,0,0,0.9);
+}
+
+/* ── Accents ────────────────────────────────────── */
+.gradient-text {
+  background: linear-gradient(110deg, var(--color-violet-soft), var(--color-cyan-soft));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.glow-violet { box-shadow: 0 8px 30px -8px var(--color-violet-glow); }
+
+/* Monospace for hashes, commitments, contract addresses */
+.font-commit {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.02em;
+  color: var(--color-text-muted);
+  word-break: break-all;
+}
+
+/* Thin scrollbar */
+::-webkit-scrollbar       { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: var(--color-border-strong); }
+
+/* Focus ring */
+*:focus-visible {
+  outline: 2px solid var(--color-violet-glow);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+::selection {
+  background: var(--color-violet);
+  color: #fff;
+}
+
+/* ── Animations ─────────────────────────────────── */
+@keyframes vm-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes vm-rise {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes vm-pulse-glow {
+  0%, 100% { opacity: 0.5; transform: scale(1); }
+  50%      { opacity: 1;   transform: scale(1.04); }
+}
+@keyframes vm-float {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-8px); }
+}
+@keyframes vm-spin-slow {
+  to { transform: rotate(360deg); }
+}
+
+.animate-fade-in { animation: vm-fade-in 0.5s ease both; }
+.animate-rise    { animation: vm-rise 0.5s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.animate-float   { animation: vm-float 6s ease-in-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
